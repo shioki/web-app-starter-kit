@@ -104,6 +104,7 @@ fi
 
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
+cp "$record" "$WORK/old-record"
 
 # 2. CKMS。導入先の中の init.sh は導入先自身に向けて実行できないので、clone したほうを使う。
 #    退避を残すため --no-backup は渡さない
@@ -124,6 +125,32 @@ if [ "$spec_changed" = true ]; then
   bash "$WORK/spec/scripts/install.sh" "$TARGET" --with-agents-md
 fi
 
+# 4. DADS。docs/design/README.md の版の記載を更新する。要求仕様の制約-XX は書き換えない
+#    (仕様書の変更は人が判断する)
+if [ "$dads_changed" = true ]; then
+  section "DADS $DADS_VERSION"
+  design="$TARGET/docs/design/README.md"
+  if [ ! -e "$design" ]; then
+    render_design_readme "$design"
+    echo "作成: docs/design/README.md"
+  else
+    old_dads=$(read_record "$WORK/old-record" DADS_VERSION)
+    old_tokens=$(read_record "$WORK/old-record" DADS_TOKENS_VERSION)
+    old_plugin=$(read_record "$WORK/old-record" DADS_TAILWIND_PLUGIN_VERSION)
+    # shellcheck disable=SC2046
+    set -- $(update_design_versions "$design" "$old_dads" "$old_tokens" "$old_plugin")
+    echo "版の記載を更新: docs/design/README.md"
+    missing=""
+    if [ "$old_dads" != "$DADS_VERSION" ] && [ "$1" -eq 0 ]; then missing="$missing DADS ($old_dads)"; fi
+    if [ "$old_tokens" != "$DADS_TOKENS_VERSION" ] && [ "$2" -eq 0 ]; then missing="$missing design-tokens ($old_tokens)"; fi
+    if [ "$old_plugin" != "$DADS_TAILWIND_PLUGIN_VERSION" ] && [ "$3" -eq 0 ]; then missing="$missing tailwind-theme-plugin ($old_plugin)"; fi
+    if [ -n "$missing" ]; then
+      echo "警告: docs/design/README.md に次の古い版の記載が見つからず、書き換えていません。手で直してください:$missing" >&2
+    fi
+  fi
+  grep '^| 制約-' "$design" > "$WORK/constraints" || :
+fi
+
 # 5. AGENTS.md の3点セットの節と、版の記録
 section "AGENTS.md と版の記録"
 apply_agents_section "$TARGET"
@@ -141,11 +168,25 @@ section "更新しました"
 echo "更新したもの:"
 [ "$ckms_changed" = false ] || echo "  - CKMS: $CKMS_REF"
 [ "$spec_changed" = false ] || echo "  - requirements-to-spec-template: $SPEC_REF"
+[ "$dads_changed" = false ] || echo "  - DADS: $DADS_VERSION (design-tokens $DADS_TOKENS_VERSION、tailwind-theme-plugin $DADS_TAILWIND_PLUGIN_VERSION) の版を docs/design/README.md に書いた"
 echo "  - AGENTS.md の3点セットの節と .web-app-starter/versions.env: web-app-starter-kit $new_starter"
 echo ""
 echo "次にやること:"
 echo "  - 変更を確認し、コミットする"
 echo "      cd $TARGET && git status"
+if [ "$dads_changed" = true ]; then
+  echo "  - DADS の版が変わった。要求仕様の制約条件 (制約-XX) は書き換えていないので、次の行を貼り直す"
+  echo "    (ID の番号は仕様書に合わせる。Tailwind CSS を使わない場合は、テーマプラグインの行は不要)"
+  sed 's/^/      /' "$WORK/constraints"
+  old_dads=$(read_record "$WORK/old-record" DADS_VERSION)
+  if [ -n "$old_dads" ] && [ "$old_dads" != "$DADS_VERSION" ] && [ -d "$TARGET/docs/requirements" ]; then
+    stale_specs=$(grep -rlF -- "$old_dads" "$TARGET/docs/requirements" || :)
+    if [ -n "$stale_specs" ]; then
+      echo "    古い DADS の版 ($old_dads) を書いている仕様書:"
+      printf '%s\n' "$stale_specs" | sed "s|^$TARGET/|      |"
+    fi
+  fi
+fi
 if [ "$ckms_changed" = true ]; then
   if [ -n "$new_backups" ]; then
     echo "  - CKMS が置き換える前のスキルを次に退避した。確認が済んだら削除してよい (.gitignore で Git から外している)"

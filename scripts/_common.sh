@@ -66,6 +66,45 @@ render_design_readme() {
       "$ROOT/templates/design-README.md" > "$1"
 }
 
+# docs/design/README.md ($1) の版の記載を書き換える。版の文字列は、それを含むはずの行だけで置き換える
+#   DADS のサイトの版: 「DADS」を含む行
+#   デザイントークンの版: 「@digital-go-jp/design-tokens」を含む行
+#   テーマプラグインの版: 「tailwind-theme-plugin」を含む行
+# 前後が数字、「.」、「v」の場所は別の版の一部なので置き換えない。
+# 置き換えた数を「サイト トークン プラグイン」の順で表示する
+update_design_versions() {
+  OLD_DADS="$2" NEW_DADS="$DADS_VERSION" \
+  OLD_TOKENS="$3" NEW_TOKENS="$DADS_TOKENS_VERSION" \
+  OLD_PLUGIN="$4" NEW_PLUGIN="$DADS_TAILWIND_PLUGIN_VERSION" \
+  COUNTS="$WORK/design-counts" awk '
+    function swap(line, from, to, kind,   out, i, before, after) {
+      if (from == "" || from == to) return line
+      out = ""
+      while ((i = index(line, from)) > 0) {
+        before = substr(line, i - 1, 1)
+        after = substr(line, i + length(from), 1)
+        if (i > 1 && before ~ /[0-9.v]/ || after ~ /[0-9]/ || (after == "." && substr(line, i + length(from) + 1, 1) ~ /[0-9]/)) {
+          out = out substr(line, 1, i + length(from) - 1)
+        } else {
+          out = out substr(line, 1, i - 1) to
+          count[kind]++
+        }
+        line = substr(line, i + length(from))
+      }
+      return out line
+    }
+    {
+      if (index($0, "DADS")) $0 = swap($0, ENVIRON["OLD_DADS"], ENVIRON["NEW_DADS"], "dads")
+      if (index($0, "@digital-go-jp/design-tokens")) $0 = swap($0, ENVIRON["OLD_TOKENS"], ENVIRON["NEW_TOKENS"], "tokens")
+      if (index($0, "tailwind-theme-plugin")) $0 = swap($0, ENVIRON["OLD_PLUGIN"], ENVIRON["NEW_PLUGIN"], "plugin")
+      print
+    }
+    END { print count["dads"] + 0, count["tokens"] + 0, count["plugin"] + 0 > ENVIRON["COUNTS"] }
+  ' "$1" > "$WORK/design-README.md"
+  cat "$WORK/design-README.md" > "$1"
+  cat "$WORK/design-counts"
+}
+
 # 導入先の AGENTS.md に3点セットの節を追記する。begin / end の節が既にあれば置き換える
 apply_agents_section() {
   agents="$1/AGENTS.md"
