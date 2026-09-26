@@ -21,7 +21,7 @@
 新しい Web アプリのリポジトリを作ったあと、このリポジトリを版 (タグ) を固定して取得し、導入スクリプトを実行します。
 
 ```bash
-git clone --depth 1 --branch v0.2.0 https://github.com/shioki/web-app-starter-kit.git /tmp/web-app-starter-kit
+git clone --depth 1 --branch v0.3.0 https://github.com/shioki/web-app-starter-kit.git /tmp/web-app-starter-kit
 bash /tmp/web-app-starter-kit/scripts/bootstrap.sh /path/to/new-web-app
 ```
 
@@ -76,14 +76,19 @@ DADS のコンポーネントは見本のコードなので、導入しません
 
 ## 導入済みのプロジェクトの更新
 
-`bootstrap.sh` は初回導入だけを担当し、導入済みのプロジェクトでは中止します。更新用の `scripts/update.sh` は今後の版で追加します。
+`bootstrap.sh` は初回導入だけを担当し、導入済みのプロジェクトでは中止します。導入済みのプロジェクトは、新しい版の web-app-starter-kit を取得して `update.sh` で更新します。
 
-3点セットの版を上げてこのリポジトリをリリースする手順は [docs/updating.md](docs/updating.md) にあります。
+```bash
+git clone --depth 1 --branch v0.3.0 https://github.com/shioki/web-app-starter-kit.git /tmp/web-app-starter-kit
+bash /tmp/web-app-starter-kit/scripts/update.sh /path/to/web-app
+```
+
+導入のときに取得した `/tmp/web-app-starter-kit` が残っていれば、先に削除します。版が変わった構成要素だけを更新します。CKMS は置き換える前のスキルを `.agents/skills.backup-*/` に退避します。更新したあとに確かめることと、3点セットの版を上げてこのリポジトリをリリースする手順は [docs/updating.md](docs/updating.md) にあります。
 
 ## 開発
 
 - エージェント向けの規約は [AGENTS.md](AGENTS.md) にあります
-- 導入の結合試験は `bash scripts/test-bootstrap.sh` でローカルでも実行できます (CI と同じ内容)
+- 導入と更新の結合試験は `bash scripts/test-bootstrap.sh` と `bash scripts/test-update.sh` でローカルでも実行できます (CI と同じ内容)
 - 構築の引き継ぎは [docs/handoff.md](docs/handoff.md) にあります
 
 ## ライセンス

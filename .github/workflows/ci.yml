@@ -61,3 +61,14 @@ jobs:
 
       - name: Run integration test
         run: bash scripts/test-bootstrap.sh
+
+  update:
+    # 古い版で導入したプロジェクトを update.sh で更新し、記録が残ること、節が1つずつであること、
+    # validate.sh、DADS の版の記載、未導入・同じ版・版が下がる場合の動きを確かめる
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Run integration test
+        run: bash scripts/test-update.sh
