@@ -16,3 +16,4 @@
 - `bootstrap.sh` が導入先の `AGENTS.md` に3点セットの節 (`templates/AGENTS.starter.md`) を追記するようにした。DADS の版に従うこと、アクセシビリティの目標、`/record-decision` と `未解決-XX` の結び付け、プロジェクトの規約の置き場所を書く。節は `<!-- web-app-starter-kit:begin -->` と `<!-- web-app-starter-kit:end -->` で囲み、既にあれば置き換える
 - `bootstrap.sh` の最後に CKMS の `validate.sh` を導入先で実行し、結果を表示するようにした。エラーがあれば 0 以外で終わる
 - `bootstrap.sh` は導入先に `.web-app-starter/versions.env` があれば、導入済みとして何も変更せずに中止するようにした
+- CI (`.github/workflows/ci.yml`) を追加。`shellcheck`、`markdownlint-cli2`、`lychee`、結合試験 `scripts/test-bootstrap.sh` (一時ディレクトリに `git init` して導入し、配置、`validate.sh`、再実行の中止を確かめる) を実行する
