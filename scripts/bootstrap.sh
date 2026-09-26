@@ -72,6 +72,20 @@ section "requirements-to-spec-template $SPEC_REF"
 clone "$SPEC_REPO" "$SPEC_REF" "$WORK/spec"
 bash "$WORK/spec/scripts/install.sh" "$TARGET" --with-agents-md
 
+# 4. DADS。コンポーネントは見本のコードなので取得せず、版と参照先を docs/design/README.md に書く
+section "DADS $DADS_VERSION"
+design="$TARGET/docs/design/README.md"
+if [ -e "$design" ]; then
+  echo "既存のため変更しない: docs/design/README.md"
+else
+  mkdir -p "$TARGET/docs/design"
+  sed -e "s|{{DADS_VERSION}}|$DADS_VERSION|g" \
+      -e "s|{{DADS_TOKENS_VERSION}}|$DADS_TOKENS_VERSION|g" \
+      -e "s|{{DADS_TAILWIND_PLUGIN_VERSION}}|$DADS_TAILWIND_PLUGIN_VERSION|g" \
+      "$ROOT/templates/design-README.md" > "$design"
+  echo "作成: docs/design/README.md"
+fi
+
 # 6. 版の記録と .gitignore
 section "版の記録"
 mkdir -p "$TARGET/.web-app-starter"
@@ -101,9 +115,11 @@ cat <<EOF
 導入したもの:
   - CKMS $CKMS_REF: .agents/skills/ (.claude/skills はそのリンク)、.cursor/、AGENTS.md、CLAUDE.md
   - requirements-to-spec-template $SPEC_REF: .agents/skills/ の要求仕様の3スキル、docs/requirements/
+  - DADS $DADS_VERSION: docs/design/README.md (版、コンポーネント、アクセシビリティ方針)
   - 版の記録: .web-app-starter/versions.env
 
 次にやること:
   1. 導入したファイルを確認し、コミットする
   2. /draft-spec で最初の要求仕様を作る
+  3. docs/design/README.md の「要求仕様の制約条件に貼る行」を、要求仕様書の制約条件に貼る
 EOF

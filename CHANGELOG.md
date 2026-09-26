@@ -12,3 +12,4 @@
 - 3点セットの版の一覧 `versions.env` を追加。CKMS v6.2.4、requirements-to-spec-template v0.4.0、DADS v2.18.0 (`@digital-go-jp/design-tokens` 2.0.1、`@digital-go-jp/tailwind-theme-plugin` 1.0.1)
 - 導入スクリプト `scripts/bootstrap.sh` を追加。導入先の Git リポジトリに、CKMS (`init.sh --yes --with-agents-md`)、requirements-to-spec-template (`install.sh --with-agents-md`) の順で導入し、版を `.web-app-starter/versions.env` に記録する。導入先の `.gitignore` に CKMS の退避先 `.agents/skills.backup-*/` の除外を足す
 - `.shellcheckrc` を追加。`scripts/` から `versions.env` を読み込む記述を shellcheck で追えるようにする
+- `bootstrap.sh` が導入先に `docs/design/README.md` を作るようにした。DADS のサイトとパッケージの版、要求仕様の制約条件に貼る行、コンポーネント一覧と見本のコード、アクセシビリティ方針への参照を書く。ひな形は `templates/design-README.md`
