@@ -38,6 +38,20 @@ bash /tmp/web-app-starter-kit/scripts/bootstrap.sh /path/to/new-web-app
 
 導入が終わったら、導入先で変更を確認してコミットします。
 
+### Tailwind CSS を使う場合
+
+`--with-tailwind` を付けると、DADS の Tailwind CSS テーマプラグイン (`@digital-go-jp/tailwind-theme-plugin`) を `versions.env` の版に固定して入れます。
+
+```bash
+bash /tmp/web-app-starter-kit/scripts/bootstrap.sh /path/to/new-web-app --with-tailwind
+```
+
+- 導入先に `package.json` があれば `npm install -D --save-exact` を実行する。`package.json` が無ければ、npm は実行せずにコマンドを表示する
+- `pnpm-lock.yaml`、`yarn.lock`、`bun.lock` (`bun.lockb`) があれば、npm は実行せず、そのパッケージマネージャーで入れるコマンドを表示する
+- Tailwind CSS の設定ファイルは編集しない。v3 は `tailwind.config.js` の `plugins`、v4 は CSS の `@import` で読み込む書き方を表示する
+
+`--with-tailwind` を付けなければ、npm などのパッケージマネージャーは実行しません。
+
 ## 導入されるもの
 
 | 場所 | 内容 | 配布元 |

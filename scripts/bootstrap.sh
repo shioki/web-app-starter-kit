@@ -1,18 +1,21 @@
 #!/usr/bin/env bash
 # 3点セット (CKMS、requirements-to-spec-template、DADS) を新しい Web アプリのリポジトリに導入する。
 #
-#   bash scripts/bootstrap.sh <導入先>
+#   bash scripts/bootstrap.sh <導入先> [--with-tailwind]
 #
 # 導入先は Git リポジトリのルートを指定する。版は versions.env で固定し、CKMS と
 # requirements-to-spec-template はその版を浅く clone して、配布元の導入スクリプトを実行する。
 # 導入した版は導入先の .web-app-starter/versions.env に記録する。
+# --with-tailwind は、導入先に package.json があれば DADS の Tailwind CSS テーマプラグインを
+# npm install -D で入れる。npm 以外のロックファイルがあれば npm は実行せず、コマンドを表示する。
 set -eu
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 TARGET=""
+WITH_TAILWIND=false
 
 usage() {
-  sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'
 }
 
 die() {
@@ -26,6 +29,7 @@ section() {
 
 while [ $# -gt 0 ]; do
   case "$1" in
+    --with-tailwind) WITH_TAILWIND=true ;;
     -h|--help) usage; exit 0 ;;
     -*) echo "不明なオプション: $1" >&2; usage >&2; exit 2 ;;
     *)
@@ -55,6 +59,22 @@ if [ -e "$TARGET/.web-app-starter/versions.env" ]; then
   echo "エラー: 導入済みです ($TARGET/.web-app-starter/versions.env があります)。何も変更せずに中止しました" >&2
   echo "導入済みのプロジェクトの更新は scripts/update.sh で行います (今後の版で追加する予定です)" >&2
   exit 1
+fi
+
+# --with-tailwind で使うパッケージマネージャー。npm 以外のロックファイルがあれば、
+# そのパッケージマネージャーのコマンドを表示するだけにする (技術スタックを固定しないため)
+TAILWIND_PLUGIN="@digital-go-jp/tailwind-theme-plugin@$DADS_TAILWIND_PLUGIN_VERSION"
+tailwind_command=""
+if [ "$WITH_TAILWIND" = true ]; then
+  if [ -e "$TARGET/pnpm-lock.yaml" ]; then
+    tailwind_command="pnpm add -D --save-exact $TAILWIND_PLUGIN"
+  elif [ -e "$TARGET/yarn.lock" ]; then
+    tailwind_command="yarn add -D --exact $TAILWIND_PLUGIN"
+  elif [ -e "$TARGET/bun.lock" ] || [ -e "$TARGET/bun.lockb" ]; then
+    tailwind_command="bun add -d --exact $TAILWIND_PLUGIN"
+  elif [ -e "$TARGET/package.json" ]; then
+    command -v npm >/dev/null 2>&1 || die "--with-tailwind には npm が必要です (導入先に package.json があります)"
+  fi
 fi
 
 WORK=$(mktemp -d)
@@ -91,6 +111,21 @@ else
       -e "s|{{DADS_TAILWIND_PLUGIN_VERSION}}|$DADS_TAILWIND_PLUGIN_VERSION|g" \
       "$ROOT/templates/design-README.md" > "$design"
   echo "作成: docs/design/README.md"
+fi
+
+tailwind_installed=false
+if [ "$WITH_TAILWIND" = true ]; then
+  if [ -n "$tailwind_command" ]; then
+    echo "npm 以外のロックファイルがあるため、npm は実行しません。次のコマンドで入れてください:"
+    echo "  $tailwind_command"
+  elif [ -e "$TARGET/package.json" ]; then
+    echo "npm install -D --save-exact $TAILWIND_PLUGIN"
+    (cd "$TARGET" && npm install -D --save-exact "$TAILWIND_PLUGIN")
+    tailwind_installed=true
+  else
+    echo "package.json が無いため、npm は実行しません。package.json を作ったあとに次のコマンドで入れてください:"
+    echo "  npm install -D --save-exact $TAILWIND_PLUGIN"
+  fi
 fi
 
 # 5. AGENTS.md に3点セットの節を追記する。begin / end の節が既にあれば置き換える
@@ -162,3 +197,18 @@ cat <<EOF
   2. /draft-spec で最初の要求仕様を作る
   3. docs/design/README.md の「要求仕様の制約条件に貼る行」を、要求仕様書の制約条件に貼る
 EOF
+
+if [ "$WITH_TAILWIND" = true ]; then
+  if [ "$tailwind_installed" = true ]; then
+    echo ""
+    echo "Tailwind CSS のテーマプラグイン $TAILWIND_PLUGIN を devDependencies に入れました。"
+  else
+    echo ""
+    echo "Tailwind CSS のテーマプラグインは入れていません。上に表示したコマンドで入れてください。"
+  fi
+  cat <<'EOF'
+Tailwind CSS の設定ファイルは編集していません。使う版に合わせて、次を足してください:
+  v3: tailwind.config.js の plugins に require('@digital-go-jp/tailwind-theme-plugin') を足す
+  v4: Tailwind CSS を読み込む CSS で、@import 'tailwindcss'; の後ろに @import '@digital-go-jp/tailwind-theme-plugin/v4'; を足す
+EOF
+fi
