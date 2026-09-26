@@ -6,6 +6,15 @@
 
 ## [Unreleased]
 
+### Added
+
+- 導入済みのプロジェクトを更新する `scripts/update.sh` を追加。導入先の `.web-app-starter/versions.env` と比べて版が変わった構成要素だけ、CKMS の `init.sh --yes --with-agents-md` と requirements-to-spec-template の `install.sh --with-agents-md` を新しい版で再実行する。`AGENTS.md` の3点セットの節、版の記録、`.gitignore` の退避先の除外を更新し、`validate.sh` で検証する。CKMS の退避先と、版を上げたあとに確かめることを表示する。版が下がる場合と、未導入の導入先では、何も変更せずに中止する
+
+### Changed
+
+- `bootstrap.sh` と `update.sh` が共通で使う処理を `scripts/_common.sh` にまとめた
+- `bootstrap.sh` を導入済みのプロジェクトに実行したとき、`update.sh` の実行方法を表示するようにした
+
 ## [0.2.0] - 2026-09-26
 
 ### Added
