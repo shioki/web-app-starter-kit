@@ -10,6 +10,10 @@
 
 - `bootstrap.sh --with-tailwind` を追加。導入先に `package.json` があれば、`@digital-go-jp/tailwind-theme-plugin` を `versions.env` の版に固定して `npm install -D --save-exact` で入れる。npm 以外のロックファイル (`pnpm-lock.yaml`、`yarn.lock`、`bun.lock`) があるときと、`package.json` が無いときは npm を実行せず、入れるコマンドを表示する。Tailwind CSS の設定ファイルは編集せず、v3 と v4 の読み込み方を表示する
 
+### Changed
+
+- `bootstrap.sh` の最後の「次にやること」を詳しくした。`/draft-spec` と `/review-spec` の使い方、DADS の制約行を仕様書の制約条件に貼ること、`check_ids.py` での検査、プロジェクトの規約を `team-standards/references/STANDARDS_TEMPLATE.md` に書くことを表示する
+
 ## [0.1.0] - 2026-09-26
 
 ### Added

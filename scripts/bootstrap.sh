@@ -194,8 +194,19 @@ cat <<EOF
 
 次にやること:
   1. 導入したファイルを確認し、コミットする
-  2. /draft-spec で最初の要求仕様を作る
-  3. docs/design/README.md の「要求仕様の制約条件に貼る行」を、要求仕様書の制約条件に貼る
+       cd $TARGET && git status
+  2. 最初の要求仕様を作る
+       エージェント (Cursor / Claude Code / Codex) に /draft-spec と入力し、会議メモやチャットを貼る。
+       草案は docs/requirements/<仕様名>.md にでき、足りない情報は 未解決-XX になる。
+       草案ができたら /review-spec で、あいまいな記述と抜けを指摘させる
+  3. 準拠する DADS の版を要求仕様に固定する
+       docs/design/README.md の「要求仕様の制約条件に貼る行」を、仕様書の「制約条件」の表に貼る。
+       ID の番号は仕様書に合わせて振り直す。Tailwind CSS を使う場合は、テーマプラグインの行も貼る
+  4. 仕様書の ID の整合を検査する
+       python3 .agents/skills/requirements-spec/scripts/check_ids.py docs/requirements/<仕様名>.md
+  5. プロジェクトの規約を書く
+       .agents/skills/team-standards/references/STANDARDS_TEMPLATE.md の初期値 (例) を書き換える。
+       SKILL.md は更新すると配布元の内容に戻るので、規約は SKILL.md ではなくこのファイルに書く
 EOF
 
 if [ "$WITH_TAILWIND" = true ]; then

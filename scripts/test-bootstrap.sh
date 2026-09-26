@@ -69,6 +69,9 @@ for mark in requirements-to-spec-template:begin requirements-to-spec-template:en
   equals "AGENTS.md の $mark" 1 "$(grep -cF "<!-- $mark -->" "$target/AGENTS.md")"
 done
 equals "CLAUDE.md" "@AGENTS.md" "$(cat "$target/CLAUDE.md")"
+# 導入後の案内で示すファイル。版を上げて配布元の場所が変わったら、案内も直す
+check "案内のファイル: STANDARDS_TEMPLATE.md" test -f "$target/.agents/skills/team-standards/references/STANDARDS_TEMPLATE.md"
+check "案内のファイル: check_ids.py" test -f "$target/.agents/skills/requirements-spec/scripts/check_ids.py"
 
 echo "=== CKMS の構造検証 ==="
 if (cd "$target" && bash .agents/skills/project-setup/scripts/validate.sh >/dev/null); then
