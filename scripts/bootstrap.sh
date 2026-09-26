@@ -134,6 +134,12 @@ else
   echo "追記: .gitignore ($backup_pattern)"
 fi
 
+# 7. 検証。CKMS の validate.sh は導入先のルートで実行する
+section "検証"
+if ! (cd "$TARGET" && bash .agents/skills/project-setup/scripts/validate.sh); then
+  die "CKMS の構造検証でエラーが見つかりました。上の表示を確認してください"
+fi
+
 # 8. 後片付けと案内。一時 clone は trap で削除する
 section "導入しました"
 cat <<EOF

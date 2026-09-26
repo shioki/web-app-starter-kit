@@ -14,3 +14,4 @@
 - `.shellcheckrc` を追加。`scripts/` から `versions.env` を読み込む記述を shellcheck で追えるようにする
 - `bootstrap.sh` が導入先に `docs/design/README.md` を作るようにした。DADS のサイトとパッケージの版、要求仕様の制約条件に貼る行、コンポーネント一覧と見本のコード、アクセシビリティ方針への参照を書く。ひな形は `templates/design-README.md`
 - `bootstrap.sh` が導入先の `AGENTS.md` に3点セットの節 (`templates/AGENTS.starter.md`) を追記するようにした。DADS の版に従うこと、アクセシビリティの目標、`/record-decision` と `未解決-XX` の結び付け、プロジェクトの規約の置き場所を書く。節は `<!-- web-app-starter-kit:begin -->` と `<!-- web-app-starter-kit:end -->` で囲み、既にあれば置き換える
+- `bootstrap.sh` の最後に CKMS の `validate.sh` を導入先で実行し、結果を表示するようにした。エラーがあれば 0 以外で終わる
