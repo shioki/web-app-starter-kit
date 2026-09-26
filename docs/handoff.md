@@ -1,7 +1,7 @@
 # 引き継ぎ: 3点セット導入リポジトリの新規構築
 
 作成日: 2026-09-26
-更新日: 2026-09-26(リポジトリへ保存。名前と公開範囲を確定。CKMS v6.2.4 に合わせて 4.1 節、5.2 節、5.3 節、7 章 P2・P3、8 章を修正。P3 の更新方式と退避の扱いを 2 章の合意事項に追加)
+更新日: 2026-09-26(リポジトリへ保存。名前と公開範囲を確定。CKMS v6.2.4 に合わせて 4.1 節、5.2 節、5.3 節、7 章 P2・P3、8 章を修正。P3 の更新方式と退避の扱いを 2 章の合意事項に追加。CKMS の AGENTS.md テンプレートには begin / end の目印が無いため、5.4 節と 7 章 P1-5・P3-1 の完了条件を2種類に修正)
 作業環境: Cursor
 前提の作業: `shioki/requirements-to-spec-template` を v0.4.0 までリリース済み。CKMS を v6.2.4 までリリース済み
 
@@ -65,7 +65,7 @@
 
 - 導入: `bash skills/project-setup/scripts/init.sh <導入先> [--yes] [--legacy-claude|--cursor-only] [--with-agents-md] [--no-hooks] [--no-agents] [--no-claude-bridge] [--no-backup]`。Windows は `init.ps1`
 - 配置先: `.agents/skills/`(Cursor・Codex が直接読む)。Claude Code 向けに `.claude/skills` → `../.agents/skills` のシンボリックリンクを作る
-- `--with-agents-md`: `AGENTS.md`(テンプレート)と `CLAUDE.md`(`@AGENTS.md` の1行)を作る。どちらも既存なら上書きしない
+- `--with-agents-md`: `AGENTS.md`(テンプレート)と `CLAUDE.md`(`@AGENTS.md` の1行)を作る。どちらも既存なら上書きしない。テンプレートには begin / end の目印が無く、ファイル全体が CKMS のテンプレートになる
 - 構造検証: 導入先で `bash .agents/skills/project-setup/scripts/validate.sh`。v6.2.2 から、再実行の失敗で残った一時ディレクトリも警告し、退避先 `skills.backup-*` の件数を表示する
 - `team-standards` の規約: v6.2.4 から `.agents/skills/team-standards/references/STANDARDS_TEMPLATE.md` に書く(再実行で残る)。frontmatter の `paths` は `SKILL.md` にあるため、再実行で初期値に戻る
 - `gh skill install` などでスキルを個別に入れる場合は、`project-setup` も同じ場所に入れる。記録用スクリプト(`add-entry.sh` など)は `project-setup` の `_skill-base.sh` を使い、無いとエラーで止まる(v6.2.4)
@@ -166,7 +166,7 @@ DADS_TAILWIND_PLUGIN_VERSION=1.0.1
 
 ### 5.4 既知の見た目の問題
 
-CKMS の `AGENTS.md` テンプレートは末尾に注記(「このファイルは templates/AGENTS.md.template を元にしています」)がある。requirements-to-spec-template の節は、その後ろに追記される。気になる場合は、3点セットの節の中に「要求仕様の節は末尾にある」旨を書くか、並べ替えを検討する。ただし、CKMS 側と requirements-to-spec-template 側の begin / end で囲まれた範囲は変えない。
+CKMS の `AGENTS.md` テンプレートは末尾に注記(「このファイルは templates/AGENTS.md.template を元にしています」)がある。requirements-to-spec-template の節は、その後ろに追記される。気になる場合は、3点セットの節の中に「要求仕様の節は末尾にある」旨を書くか、並べ替えを検討する。ただし、requirements-to-spec-template 側の begin / end で囲まれた範囲は変えない。CKMS のテンプレートには begin / end の目印が無い(既存の `AGENTS.md` を上書きしないことで保たれる)ため、`AGENTS.md` の begin / end は requirements-to-spec-template と web-app-starter-kit の2種類になる。
 
 ## 6. 新リポジトリの構成(推奨)
 
@@ -207,7 +207,7 @@ CKMS の `AGENTS.md` テンプレートは末尾に注記(「このファイル�
     - 完了条件: 空の Git リポジトリに実行して、`.agents/skills/` に CKMS の13スキルと要求仕様の3スキル(計16)が並ぶ。`docs/requirements/README.md` がある。`.claude/skills` が `.agents/skills` を指す。`.gitignore` に `.agents/skills.backup-*/` がある
 4. **DADS の配置**: 5.3 節の 4
 5. **AGENTS.md の3点セットの節**: 5.3 節の 5
-    - 完了条件: 2回実行しても、3種類の begin / end のそれぞれの節が1つずつしかない
+    - 完了条件: 2回実行しても、2種類の begin / end(requirements-to-spec-template と web-app-starter-kit)のそれぞれの節が1つずつしかない。CKMS のテンプレート(末尾の注記)も1つだけ
 6. **検証の表示**: 5.3 節の 7
     - 完了条件: CKMS の `validate.sh` がエラー0件
 7. **再導入の防止**: 5.3 節の 1 の中止処理
@@ -244,7 +244,7 @@ CKMS の `AGENTS.md` テンプレートは末尾に注記(「このファイル�
 作業項目は次のとおりです。P1 と同じく1項目1コミットで進めます。
 
 1. **update.sh の本体**: 上の 1〜3、5〜7
-    - 完了条件: `bootstrap.sh` で導入したプロジェクトの `versions.env` の版を下げてから実行すると、16スキルが残り、`decisions/` の既存ファイルが残り、3種類の begin / end の節が1つずつ。`validate.sh` がエラー0件。`.gitignore` に退避先の除外が1行だけある
+    - 完了条件: `bootstrap.sh` で導入したプロジェクトの `versions.env` の版を下げてから実行すると、16スキルが残り、`decisions/` の既存ファイルが残り、2種類の begin / end(requirements-to-spec-template と web-app-starter-kit)の節が1つずつ。`validate.sh` がエラー0件。`.gitignore` に退避先の除外が1行だけある
 2. **DADS の版の更新**: 上の 4
 3. **CI の結合試験**: `bootstrap.sh` → 記録を1件足す → `update.sh` → 1 の完了条件を確認 → 未導入のディレクトリで `update.sh` が中止されることを確認
 4. **docs/updating.md**: `update.sh` の使い方と、7 の案内の内容。P2 の 3(版を上げる手順)と同じファイルにまとめる
