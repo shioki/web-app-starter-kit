@@ -49,6 +49,13 @@ command -v git >/dev/null 2>&1 || die "git が見つかりません"
 TARGET=$(cd "$TARGET" && pwd)
 [ "$TARGET" != "$ROOT" ] || die "このリポジトリ自身には導入できません"
 [ -e "$TARGET/.git" ] || die "導入先が Git リポジトリのルートではありません: $TARGET (先に git init を実行してください)"
+# bootstrap.sh は初回導入だけを担当する。再実行すると docs/design/README.md や版の記録が
+# 導入物と食い違うため、導入済みなら何も変更せずに中止する
+if [ -e "$TARGET/.web-app-starter/versions.env" ]; then
+  echo "エラー: 導入済みです ($TARGET/.web-app-starter/versions.env があります)。何も変更せずに中止しました" >&2
+  echo "導入済みのプロジェクトの更新は scripts/update.sh で行います (今後の版で追加する予定です)" >&2
+  exit 1
+fi
 
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
