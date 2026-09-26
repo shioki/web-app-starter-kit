@@ -21,7 +21,7 @@
 新しい Web アプリのリポジトリを作ったあと、このリポジトリを版 (タグ) を固定して取得し、導入スクリプトを実行します。
 
 ```bash
-git clone --depth 1 --branch v0.1.0 https://github.com/shioki/web-app-starter-kit.git /tmp/web-app-starter-kit
+git clone --depth 1 --branch v0.2.0 https://github.com/shioki/web-app-starter-kit.git /tmp/web-app-starter-kit
 bash /tmp/web-app-starter-kit/scripts/bootstrap.sh /path/to/new-web-app
 ```
 
@@ -72,7 +72,7 @@ DADS のコンポーネントは見本のコードなので、導入しません
 
 ## Windows
 
-`bootstrap.sh` は bash で動きます。CKMS には PowerShell 版の `init.ps1` がありますが、requirements-to-spec-template には PowerShell 版がありません。v0.1.0 では、WSL か Git Bash で実行してください。
+`bootstrap.sh` は bash で動きます。CKMS には PowerShell 版の `init.ps1` がありますが、requirements-to-spec-template には PowerShell 版がありません。WSL か Git Bash で実行してください。
 
 ## 導入済みのプロジェクトの更新
 
