@@ -21,7 +21,7 @@
 新しい Web アプリのリポジトリを作ったあと、このリポジトリを版 (タグ) を固定して取得し、導入スクリプトを実行します。
 
 ```bash
-git clone --depth 1 --branch v0.1.0 https://github.com/shioki/web-app-starter-kit.git /tmp/web-app-starter-kit
+git clone --depth 1 --branch v0.2.0 https://github.com/shioki/web-app-starter-kit.git /tmp/web-app-starter-kit
 bash /tmp/web-app-starter-kit/scripts/bootstrap.sh /path/to/new-web-app
 ```
 
@@ -37,6 +37,20 @@ bash /tmp/web-app-starter-kit/scripts/bootstrap.sh /path/to/new-web-app
 8. 一時的に取得したものを削除し、導入したものと次にやることを表示する
 
 導入が終わったら、導入先で変更を確認してコミットします。
+
+### Tailwind CSS を使う場合
+
+`--with-tailwind` を付けると、DADS の Tailwind CSS テーマプラグイン (`@digital-go-jp/tailwind-theme-plugin`) を `versions.env` の版に固定して入れます。
+
+```bash
+bash /tmp/web-app-starter-kit/scripts/bootstrap.sh /path/to/new-web-app --with-tailwind
+```
+
+- 導入先に `package.json` があれば `npm install -D --save-exact` を実行する。`package.json` が無ければ、npm は実行せずにコマンドを表示する
+- `pnpm-lock.yaml`、`yarn.lock`、`bun.lock` (`bun.lockb`) があれば、npm は実行せず、そのパッケージマネージャーで入れるコマンドを表示する
+- Tailwind CSS の設定ファイルは編集しない。v3 は `tailwind.config.js` の `plugins`、v4 は CSS の `@import` で読み込む書き方を表示する
+
+`--with-tailwind` を付けなければ、npm などのパッケージマネージャーは実行しません。
 
 ## 導入されるもの
 
@@ -58,11 +72,13 @@ DADS のコンポーネントは見本のコードなので、導入しません
 
 ## Windows
 
-`bootstrap.sh` は bash で動きます。CKMS には PowerShell 版の `init.ps1` がありますが、requirements-to-spec-template には PowerShell 版がありません。v0.1.0 では、WSL か Git Bash で実行してください。
+`bootstrap.sh` は bash で動きます。CKMS には PowerShell 版の `init.ps1` がありますが、requirements-to-spec-template には PowerShell 版がありません。WSL か Git Bash で実行してください。
 
 ## 導入済みのプロジェクトの更新
 
 `bootstrap.sh` は初回導入だけを担当し、導入済みのプロジェクトでは中止します。更新用の `scripts/update.sh` は今後の版で追加します。
+
+3点セットの版を上げてこのリポジトリをリリースする手順は [docs/updating.md](docs/updating.md) にあります。
 
 ## 開発
 

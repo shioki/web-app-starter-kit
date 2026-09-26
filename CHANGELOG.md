@@ -6,6 +6,17 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-26
+
+### Added
+
+- `bootstrap.sh --with-tailwind` を追加。導入先に `package.json` があれば、`@digital-go-jp/tailwind-theme-plugin` を `versions.env` の版に固定して `npm install -D --save-exact` で入れる。npm 以外のロックファイル (`pnpm-lock.yaml`、`yarn.lock`、`bun.lock`) があるときと、`package.json` が無いときは npm を実行せず、入れるコマンドを表示する。Tailwind CSS の設定ファイルは編集せず、v3 と v4 の読み込み方を表示する
+- 版の上げ方を書いた `docs/updating.md` を追加。配布元の新しい版の確かめ方、`bootstrap.sh` やひな形も直す必要がある変更、`versions.env` を変えてからの試験、リリースの手順を書く
+
+### Changed
+
+- `bootstrap.sh` の最後の「次にやること」を詳しくした。`/draft-spec` と `/review-spec` の使い方、DADS の制約行を仕様書の制約条件に貼ること、`check_ids.py` での検査、プロジェクトの規約を `team-standards/references/STANDARDS_TEMPLATE.md` に書くことを表示する
+
 ## [0.1.0] - 2026-09-26
 
 ### Added
@@ -21,5 +32,6 @@
 - CI (`.github/workflows/ci.yml`) を追加。`shellcheck`、`markdownlint-cli2`、`lychee`、結合試験 `scripts/test-bootstrap.sh` (一時ディレクトリに `git init` して導入し、配置、`validate.sh`、再実行の中止を確かめる) を実行する
 - README に、前提 (`git`、`bash`)、導入手順、導入されるもの、Windows の扱い (WSL か Git Bash) を記載
 
-[Unreleased]: https://github.com/shioki/web-app-starter-kit/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/shioki/web-app-starter-kit/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/shioki/web-app-starter-kit/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/shioki/web-app-starter-kit/tree/v0.1.0

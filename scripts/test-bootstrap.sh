@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# bootstrap.sh の結合試験。一時ディレクトリに git init して導入し、配置と再実行の中止を確かめる。
+# bootstrap.sh の結合試験。一時ディレクトリに git init して導入し、配置、再実行の中止、--with-tailwind を確かめる。
 #
 #   bash scripts/test-bootstrap.sh
 #
 # CI の結合試験と同じ内容をローカルでも実行できる。ネットワークから CKMS と
-# requirements-to-spec-template を取得する。
+# requirements-to-spec-template を取得する。--with-tailwind の試験は npm を使う。
 set -eu
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
@@ -69,6 +69,9 @@ for mark in requirements-to-spec-template:begin requirements-to-spec-template:en
   equals "AGENTS.md の $mark" 1 "$(grep -cF "<!-- $mark -->" "$target/AGENTS.md")"
 done
 equals "CLAUDE.md" "@AGENTS.md" "$(cat "$target/CLAUDE.md")"
+# 導入後の案内で示すファイル。版を上げて配布元の場所が変わったら、案内も直す
+check "案内のファイル: STANDARDS_TEMPLATE.md" test -f "$target/.agents/skills/team-standards/references/STANDARDS_TEMPLATE.md"
+check "案内のファイル: check_ids.py" test -f "$target/.agents/skills/requirements-spec/scripts/check_ids.py"
 
 echo "=== CKMS の構造検証 ==="
 if (cd "$target" && bash .agents/skills/project-setup/scripts/validate.sh >/dev/null); then
@@ -88,6 +91,40 @@ else
 fi
 check "decisions/ の既存ファイルが残る" test -f "$sample"
 check "AGENTS.md が変わらない" test "$agents_before" = "$(cat "$target/AGENTS.md")"
+
+new_target() {
+  dir="$WORK/$1"
+  mkdir "$dir"
+  git -C "$dir" init -q
+  echo "$dir"
+}
+
+plugin="@digital-go-jp/tailwind-theme-plugin"
+# shellcheck source=../versions.env
+plugin_version=$(. "$ROOT/versions.env" && echo "$DADS_TAILWIND_PLUGIN_VERSION")
+
+echo "=== --with-tailwind: package.json があれば npm で入れる ==="
+target=$(new_target tailwind-npm)
+printf '{\n  "name": "app",\n  "private": true\n}\n' > "$target/package.json"
+bash "$ROOT/scripts/bootstrap.sh" "$target" --with-tailwind > "$WORK/tailwind-npm.log"
+check "devDependencies に版を固定して入る" grep -qF "\"$plugin\": \"$plugin_version\"" "$target/package.json"
+check "node_modules に入る" test -f "$target/node_modules/$plugin/package.json"
+check "設定の書き方を表示する" grep -qF "@import '$plugin/v4';" "$WORK/tailwind-npm.log"
+
+echo "=== --with-tailwind: npm 以外のロックファイルがあれば npm を実行しない ==="
+target=$(new_target tailwind-pnpm)
+printf '{\n  "name": "app",\n  "private": true\n}\n' > "$target/package.json"
+: > "$target/pnpm-lock.yaml"
+bash "$ROOT/scripts/bootstrap.sh" "$target" --with-tailwind > "$WORK/tailwind-pnpm.log"
+check "package-lock.json を作らない" test ! -e "$target/package-lock.json"
+check "node_modules を作らない" test ! -e "$target/node_modules"
+check "pnpm のコマンドを表示する" grep -qF "pnpm add -D --save-exact $plugin@$plugin_version" "$WORK/tailwind-pnpm.log"
+
+echo "=== --with-tailwind: package.json が無ければ npm を実行しない ==="
+target=$(new_target tailwind-none)
+bash "$ROOT/scripts/bootstrap.sh" "$target" --with-tailwind > "$WORK/tailwind-none.log"
+check "package.json を作らない" test ! -e "$target/package.json"
+check "npm のコマンドを表示する" grep -qF "npm install -D --save-exact $plugin@$plugin_version" "$WORK/tailwind-none.log"
 
 echo ""
 if [ "$FAILURES" -gt 0 ]; then

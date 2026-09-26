@@ -53,7 +53,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   bootstrap:
-    # 空の Git リポジトリに導入し、配置、validate.sh、再実行の中止を確かめる
+    # 空の Git リポジトリに導入し、配置、validate.sh、再実行の中止、--with-tailwind を確かめる
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
