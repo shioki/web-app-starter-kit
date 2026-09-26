@@ -6,6 +6,8 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-09-26
+
 ### Added
 
 - 導入済みのプロジェクトを更新する `scripts/update.sh` を追加。導入先の `.web-app-starter/versions.env` と比べて版が変わった構成要素だけ、CKMS の `init.sh --yes --with-agents-md` と requirements-to-spec-template の `install.sh --with-agents-md` を新しい版で再実行する。`AGENTS.md` の3点セットの節、版の記録、`.gitignore` の退避先の除外を更新し、`validate.sh` で検証する。CKMS の退避先と、版を上げたあとに確かめることを表示する。版が下がる場合と、未導入の導入先では、何も変更せずに中止する
@@ -44,6 +46,7 @@
 - CI (`.github/workflows/ci.yml`) を追加。`shellcheck`、`markdownlint-cli2`、`lychee`、結合試験 `scripts/test-bootstrap.sh` (一時ディレクトリに `git init` して導入し、配置、`validate.sh`、再実行の中止を確かめる) を実行する
 - README に、前提 (`git`、`bash`)、導入手順、導入されるもの、Windows の扱い (WSL か Git Bash) を記載
 
-[Unreleased]: https://github.com/shioki/web-app-starter-kit/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/shioki/web-app-starter-kit/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/shioki/web-app-starter-kit/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/shioki/web-app-starter-kit/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/shioki/web-app-starter-kit/tree/v0.1.0

@@ -21,7 +21,7 @@
 新しい Web アプリのリポジトリを作ったあと、このリポジトリを版 (タグ) を固定して取得し、導入スクリプトを実行します。
 
 ```bash
-git clone --depth 1 --branch v0.2.0 https://github.com/shioki/web-app-starter-kit.git /tmp/web-app-starter-kit
+git clone --depth 1 --branch v0.3.0 https://github.com/shioki/web-app-starter-kit.git /tmp/web-app-starter-kit
 bash /tmp/web-app-starter-kit/scripts/bootstrap.sh /path/to/new-web-app
 ```
 
@@ -79,7 +79,7 @@ DADS のコンポーネントは見本のコードなので、導入しません
 `bootstrap.sh` は初回導入だけを担当し、導入済みのプロジェクトでは中止します。導入済みのプロジェクトは、新しい版の web-app-starter-kit を取得して `update.sh` で更新します。
 
 ```bash
-git clone --depth 1 --branch v0.2.0 https://github.com/shioki/web-app-starter-kit.git /tmp/web-app-starter-kit
+git clone --depth 1 --branch v0.3.0 https://github.com/shioki/web-app-starter-kit.git /tmp/web-app-starter-kit
 bash /tmp/web-app-starter-kit/scripts/update.sh /path/to/web-app
 ```
 
