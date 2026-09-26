@@ -86,6 +86,31 @@ else
   echo "作成: docs/design/README.md"
 fi
 
+# 5. AGENTS.md に3点セットの節を追記する。begin / end の節が既にあれば置き換える
+section "AGENTS.md"
+agents="$TARGET/AGENTS.md"
+snippet="$ROOT/templates/AGENTS.starter.md"
+begin="<!-- web-app-starter-kit:begin -->"
+end="<!-- web-app-starter-kit:end -->"
+if [ ! -e "$agents" ]; then
+  printf '# AGENTS.md\n\n' > "$agents"
+  cat "$snippet" >> "$agents"
+  echo "作成: AGENTS.md"
+elif grep -qxF "$begin" "$agents"; then
+  tmp="$WORK/AGENTS.md"
+  SNIPPET="$snippet" BEGIN_MARK="$begin" END_MARK="$end" awk '
+    $0 == ENVIRON["BEGIN_MARK"] { while ((getline line < ENVIRON["SNIPPET"]) > 0) print line; skip = 1; next }
+    $0 == ENVIRON["END_MARK"] { skip = 0; next }
+    !skip { print }
+  ' "$agents" > "$tmp"
+  cat "$tmp" > "$agents"
+  echo "3点セットの節を置き換え: AGENTS.md"
+else
+  printf '\n' >> "$agents"
+  cat "$snippet" >> "$agents"
+  echo "3点セットの節を追記: AGENTS.md"
+fi
+
 # 6. 版の記録と .gitignore
 section "版の記録"
 mkdir -p "$TARGET/.web-app-starter"
@@ -114,6 +139,7 @@ section "導入しました"
 cat <<EOF
 導入したもの:
   - CKMS $CKMS_REF: .agents/skills/ (.claude/skills はそのリンク)、.cursor/、AGENTS.md、CLAUDE.md
+  - AGENTS.md の3点セットの節 (web-app-starter-kit:begin / end)
   - requirements-to-spec-template $SPEC_REF: .agents/skills/ の要求仕様の3スキル、docs/requirements/
   - DADS $DADS_VERSION: docs/design/README.md (版、コンポーネント、アクセシビリティ方針)
   - 版の記録: .web-app-starter/versions.env
