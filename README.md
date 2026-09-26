@@ -78,6 +78,8 @@ DADS のコンポーネントは見本のコードなので、導入しません
 
 `bootstrap.sh` は初回導入だけを担当し、導入済みのプロジェクトでは中止します。更新用の `scripts/update.sh` は今後の版で追加します。
 
+3点セットの版を上げてこのリポジトリをリリースする手順は [docs/updating.md](docs/updating.md) にあります。
+
 ## 開発
 
 - エージェント向けの規約は [AGENTS.md](AGENTS.md) にあります
