@@ -17,3 +17,4 @@
 - `bootstrap.sh` の最後に CKMS の `validate.sh` を導入先で実行し、結果を表示するようにした。エラーがあれば 0 以外で終わる
 - `bootstrap.sh` は導入先に `.web-app-starter/versions.env` があれば、導入済みとして何も変更せずに中止するようにした
 - CI (`.github/workflows/ci.yml`) を追加。`shellcheck`、`markdownlint-cli2`、`lychee`、結合試験 `scripts/test-bootstrap.sh` (一時ディレクトリに `git init` して導入し、配置、`validate.sh`、再実行の中止を確かめる) を実行する
+- README に、前提 (`git`、`bash`)、導入手順、導入されるもの、Windows の扱い (WSL か Git Bash) を記載
