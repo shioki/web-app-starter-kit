@@ -6,6 +6,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- `docs/handoff.md` の begin / end の記述を実態に合わせた。CKMS の `AGENTS.md` テンプレートには begin / end の目印が無いため、5.4 節と 7 章 P1-5・P3-1 の完了条件を2種類 (requirements-to-spec-template と web-app-starter-kit) に直した
+
 ## [0.3.0] - 2026-09-26
 
 ### Added
