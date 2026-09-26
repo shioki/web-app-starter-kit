@@ -6,6 +6,8 @@
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-09-26
+
 ### Added
 
 - リポジトリの骨組み (`LICENSE` (MIT)、`.gitignore`、`.editorconfig`、`.markdownlint.jsonc`、`AGENTS.md`、`CLAUDE.md`、`CHANGELOG.md`) を追加
@@ -18,3 +20,6 @@
 - `bootstrap.sh` は導入先に `.web-app-starter/versions.env` があれば、導入済みとして何も変更せずに中止するようにした
 - CI (`.github/workflows/ci.yml`) を追加。`shellcheck`、`markdownlint-cli2`、`lychee`、結合試験 `scripts/test-bootstrap.sh` (一時ディレクトリに `git init` して導入し、配置、`validate.sh`、再実行の中止を確かめる) を実行する
 - README に、前提 (`git`、`bash`)、導入手順、導入されるもの、Windows の扱い (WSL か Git Bash) を記載
+
+[Unreleased]: https://github.com/shioki/web-app-starter-kit/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/shioki/web-app-starter-kit/tree/v0.1.0
