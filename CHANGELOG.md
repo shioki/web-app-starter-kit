@@ -11,6 +11,7 @@
 - 導入済みのプロジェクトを更新する `scripts/update.sh` を追加。導入先の `.web-app-starter/versions.env` と比べて版が変わった構成要素だけ、CKMS の `init.sh --yes --with-agents-md` と requirements-to-spec-template の `install.sh --with-agents-md` を新しい版で再実行する。`AGENTS.md` の3点セットの節、版の記録、`.gitignore` の退避先の除外を更新し、`validate.sh` で検証する。CKMS の退避先と、版を上げたあとに確かめることを表示する。版が下がる場合と、未導入の導入先では、何も変更せずに中止する
 - `update.sh` が DADS の版の変更を `docs/design/README.md` に反映するようにした。版の表と制約条件に貼る行の版を書き換える。要求仕様の `制約-XX` は書き換えず、貼り直す行と、古い版を書いている仕様書を表示する
 - CI に `update.sh` の結合試験 `scripts/test-update.sh` を追加。古い版で導入したプロジェクトに記録を足してから更新し、16スキル、記録、`AGENTS.md` の begin / end の節、`.gitignore` の除外、`validate.sh`、DADS の版の記載を確かめる。未導入のディレクトリで中止すること、同じ版なら何も変更しないこと、版が下がるなら中止することも確かめる
+- `docs/updating.md` に、`update.sh` の使い方と処理、更新したあとに確かめること (退避先、`SKILL.md` の警告、`STANDARDS_TEMPLATE.md` と `paths`、`.cursor/agents/*.md`、DADS の制約行) を追加。README に更新手順を記載
 
 ### Changed
 
